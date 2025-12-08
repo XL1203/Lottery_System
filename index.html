@@ -95,11 +95,11 @@
       perspective: 2000px;
       transform-style: preserve-3d;
     }
-    
+
     .scene-3d {
       transform-style: preserve-3d;
     }
-    
+
     .tag-cloud-container {
       position: relative;
       width: 700px;
@@ -107,7 +107,7 @@
       transform-style: preserve-3d;
       filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.3));
     }
-    
+
     .tag-element {
       position: absolute;
       left: 50%;
@@ -131,7 +131,7 @@
       overflow: hidden;
       pointer-events: none;
     }
-    
+
     .warp-star {
       position: absolute;
       width: 2px;
@@ -144,7 +144,7 @@
       animation: warp 1.5s linear infinite;
       opacity: 0.6;
     }
-    
+
     @keyframes warp {
       0% {
         height: 0px;
@@ -172,7 +172,7 @@
       opacity: 0.4;
       animation: move-clouds 200s linear infinite;
     }
-    
+
     @keyframes move-clouds {
       from { background-position: 0 0; }
       to { background-position: 10000px 0; }
@@ -186,7 +186,7 @@
       opacity: 0;
       animation: float-particle linear infinite;
     }
-    
+
     @keyframes float-particle {
       0% {
         transform: translate(0, 0) scale(0);
@@ -212,7 +212,7 @@
       pointer-events: none;
       animation: rotate-ring linear infinite;
     }
-    
+
     @keyframes rotate-ring {
       from { transform: rotateX(60deg) rotateZ(0deg); }
       to { transform: rotateX(60deg) rotateZ(360deg); }
