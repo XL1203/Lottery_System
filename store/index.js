@@ -6,9 +6,9 @@ export const useLotteryStore = defineStore('lottery', () => {
   // --- State ---
   const participants = ref([]);
   const rounds = ref([
-    { id: '1', name: '阳关普照奖', count: 30 },
+    { id: '1', name: '阳关普照奖', count: 35 },
     { id: '2', name: '幸运三等奖', count: 25 },
-    { id: '3', name: '超级二等奖', count: 20 },
+    { id: '3', name: '超级二等奖', count: 25 },
     { id: '4', name: '差一点一等奖', count: 15 },
     { id: '5', name: '终极一等奖', count: 7 },
   ]);
@@ -115,26 +115,56 @@ export const useLotteryStore = defineStore('lottery', () => {
     currentRoundIndex.value = 0;
     isDrawing.value = false;
     participants.value = [];
+    // 切换到设置页面
+    currentView.value = 'setup';
   }
 
   function exportToExcel() {
     // Flatten data grouped by Round
     const exportData = [];
+    const exportTime = new Date().toLocaleString('zh-CN', { 
+      year: 'numeric', 
+      month: '2-digit', 
+      day: '2-digit', 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      second: '2-digit' 
+    });
+    
+    // 统计总人数和各轮人数
+    let totalWinners = 0;
+    const winnerStats = [];
     
     // Sort rounds to match the UI order
-    rounds.value.forEach(round => {
+    rounds.value.forEach((round, roundIdx) => {
       const roundData = winners.value.find(w => w.roundId === round.id);
-      if (roundData && roundData.winners.length > 0) {
+      
+      if (roundData && roundData.winners && roundData.winners.length > 0) {
+        const roundWinnerCount = roundData.winners.length;
+        totalWinners += roundWinnerCount;
+        winnerStats.push(`${round.name}: ${roundWinnerCount}人`);
+        
         roundData.winners.forEach((p, idx) => {
           exportData.push({
+            '序号': exportData.length + 1,
             '奖项名称': round.name,
+            '奖项等级': `第${roundIdx + 1}轮`,
+            '中奖名额': round.count,
+            '实际中奖人数': roundWinnerCount,
             '中奖排名': idx + 1,
-            '中奖人姓名': p.name,
-            '抽奖时间': new Date().toLocaleString()
+            '中奖人姓名': p.name || p,
+            '导出时间': exportTime
           });
         });
       }
     });
+
+    console.log('=== 导出统计 ===');
+    console.log('总参与人数:', participants.value.length);
+    console.log('总中奖人次:', totalWinners);
+    console.log('导出记录数:', exportData.length);
+    console.log('各轮统计:', winnerStats.join(', '));
+    console.log('================');
 
     if (exportData.length === 0) {
       alert('暂无中奖数据可导出');
@@ -145,17 +175,22 @@ export const useLotteryStore = defineStore('lottery', () => {
     
     // Auto-width columns
     const wscols = [
-      {wch: 20},
-      {wch: 10},
-      {wch: 20},
-      {wch: 25}
+      {wch: 8},   // 序号
+      {wch: 20},  // 奖项名称
+      {wch: 12},  // 奖项等级
+      {wch: 12},  // 中奖名额
+      {wch: 14},  // 实际中奖人数
+      {wch: 10},  // 中奖排名
+      {wch: 15},  // 中奖人姓名
+      {wch: 20}   // 导出时间
     ];
     ws['!cols'] = wscols;
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "中奖名单");
     
-    XLSX.writeFile(wb, `年会中奖名单_${new Date().toISOString().slice(0,10)}.xlsx`);
+    const fileName = `中奖名单_${new Date().toISOString().slice(0,10).replace(/-/g, '')}.xlsx`;
+    XLSX.writeFile(wb, fileName);
   }
 
   return {

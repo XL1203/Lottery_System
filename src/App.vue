@@ -45,7 +45,7 @@
 
 <script>
 import { computed, defineAsyncComponent, ref } from 'vue';
-import { useLotteryStore } from './store/index.js';
+import { useLotteryStore } from '../store/index';
 import Sidebar from './components/Sidebar.vue';
 
 const SetupView = defineAsyncComponent(() => import('./views/SetupView.vue'));
@@ -59,7 +59,6 @@ export default {
       return store.currentView === 'setup' ? 'SetupView' : 'LotteryView';
     });
 
-    // --- Notifications System ---
     const notifications = ref([]);
     const showNotification = ({ type = 'success', message }) => {
       const id = Date.now();
@@ -69,7 +68,6 @@ export default {
       }, 3000);
     };
 
-    // --- Dialog System ---
     const dialog = ref({ visible: false, title: '', message: '', onConfirm: null });
     const showConfirmDialog = ({ title, message, onConfirm }) => {
       dialog.value = { visible: true, title, message, onConfirm };

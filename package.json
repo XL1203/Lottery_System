@@ -12,14 +12,13 @@
     "vue": "3",
     "pinia": "2.1.7",
     "xlsx": "latest",
-    "vue3-sfc-loader": "latest",
     "canvas-confetti": "^1.9.4",
     "sortablejs": "^1.15.6"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
-    
+    "@vitejs/plugin-vue": "^5.1.0",
     "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "vite": "^5.4.0"
   }
 }

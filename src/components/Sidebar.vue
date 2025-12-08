@@ -24,13 +24,13 @@
 </template>
 
 <script>
-import { useLotteryStore } from './store.js';
+import { useLotteryStore } from '../../store/index';
 
 export default {
   setup() {
     const store = useLotteryStore();
     const menu = [
-      { id: 'lottery', icon: 'fa-globe', label: '3D 抽奖' },
+      { id: 'lottery', icon: 'fa-globe', label: '抽奖' },
       { id: 'setup', icon: 'fa-sliders-h', label: '设置' },
     ];
     return { store, menu };
