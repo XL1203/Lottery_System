@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "3",
-    "pinia": "2.1.7",
-    "xlsx": "latest",
+    "vue": "^3.4.0",
+    "pinia": "^2.1.7",
+    "xlsx": "^0.18.5",
     "canvas-confetti": "^1.9.4",
     "sortablejs": "^1.15.6"
   },
