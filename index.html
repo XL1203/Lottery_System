@@ -155,39 +155,31 @@
             pointer-events: none;
             font-size: var(--font-size, 34px);
             font-weight: 900;
-            will-change: transform;
+            will-change: transform, opacity;
             backface-visibility: hidden;
             transform: translate3d(var(--tx), var(--ty), var(--tz)) translate(-50%, -50%) scale(var(--scale));
             opacity: var(--opacity);
             color: var(--solid-color);
-            letter-spacing: 0.12em;
+            letter-spacing: 0.08em;
             text-shadow: 
                 0 0 var(--glow-intensity) var(--glow-color),
-                0 0 calc(var(--glow-intensity) * 0.6) var(--glow-color),
-                0 1px 3px rgba(0,0,0,0.7);
+                0 0 calc(var(--glow-intensity) * 0.5) var(--glow-color),
+                0 1px 2px rgba(0,0,0,0.5);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
+            transform-style: preserve-3d;
         }
         
-        /* 前景文字 - 增强发光和动画 */
+        /* 前景文字 - 清晰明亮 */
         .tag-front {
-            filter: brightness(1.25) contrast(1.2) saturate(1.15);
+            filter: brightness(1.2) contrast(1.3) saturate(1.1);
         }
         
         /* 中间文字 - 保持清晰 */
         .tag-middle {
-            filter: brightness(1.15) contrast(1.25) saturate(1.1);
+            filter: brightness(1.1) contrast(1.3) saturate(1.05);
             font-weight: 900;
-        }
-        
-        @keyframes glow-pulse {
-            0%, 100% { 
-                filter: brightness(1.25) contrast(1.2) saturate(1.15);
-            }
-            50% { 
-                filter: brightness(1.35) contrast(1.25) saturate(1.25);
-            }
         }
 
         /* Warp Speed Effect */

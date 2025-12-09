@@ -229,8 +229,8 @@ export default {
 
         // Config
         const SPHERE_RADIUS = 350;
-        const BASE_SPEED = 0.01;  // 待机时的滚动速度
-        const DRAW_SPEED = 0.25;  // 抽奖时的速度 - 加快
+        const BASE_SPEED = 0.012;  // 待机时的滚动速度
+        const DRAW_SPEED = 0.18;  // 抽奖时的速度 - 适中流畅
 
         // Color palette for neon effect
         const colorPalette = [
@@ -307,47 +307,63 @@ export default {
             return {x: x1, y: y1, z: z2};
         };
 
-        const animate = () => {
+        let lastTime = 0;
+        const animate = (currentTime = 0) => {
+            const deltaTime = currentTime - lastTime;
+            lastTime = currentTime;
+            
             const targetSpeed = store.isDrawing ? DRAW_SPEED : BASE_SPEED;
             const isDrawing = store.isDrawing;
-            const time = Date.now() * 0.001;
+            const time = currentTime * 0.001;
 
             // Smooth speed transition with easing
             const speedDiff = targetSpeed - rotationAxis.y;
-            rotationAxis.y += speedDiff * (isDrawing ? 0.12 : 0.05);
+            rotationAxis.y += speedDiff * (isDrawing ? 0.1 : 0.05);
 
-            // Dynamic X-axis wobble - 抽奖时更剧烈
-            rotationAxis.x = Math.sin(time * (isDrawing ? 1.5 : 0.3)) * (isDrawing ? 0.008 : 0.003);
+            // 减小X轴摆动，保持稳定流畅
+            rotationAxis.x = Math.sin(time * 0.5) * 0.002;
 
             const len = tags.value.length;
             const radiusDouble = SPHERE_RADIUS * 2;
             const radiusTriple = SPHERE_RADIUS * 3;
+            const radius12 = SPHERE_RADIUS * 1.2;
+            
+            // 预计算三角函数
+            const cosX = Math.cos(rotationAxis.x);
+            const sinX = Math.sin(rotationAxis.x);
+            const cosY = Math.cos(rotationAxis.y);
+            const sinY = Math.sin(rotationAxis.y);
             
             for (let i = 0; i < len; i++) {
                 const tag = tags.value[i];
-                const r = rotatePoint(tag.x, tag.y, tag.z, rotationAxis.x, rotationAxis.y);
-                tag.x = r.x;
-                tag.y = r.y;
-                tag.z = r.z;
+                
+                // Inline rotation for better performance
+                const x1 = tag.x * cosY - tag.z * sinY;
+                const z1 = tag.z * cosY + tag.x * sinY;
+                const y1 = tag.y * cosX - z1 * sinX;
+                const z2 = z1 * cosX + tag.y * sinX;
+                
+                tag.x = x1;
+                tag.y = y1;
+                tag.z = z2;
 
                 // Optimized depth calculations
-                const zOffset = tag.z + radiusDouble;
+                const zOffset = z2 + radiusDouble;
                 const depthFactor = zOffset / radiusTriple;
-                tag.scale = 0.3 + depthFactor * 0.7;
+                tag.scale = 0.35 + depthFactor * 0.65;
                 
-                // Smoother opacity
-                tag.opacity = Math.max(0.15, Math.min(1, (tag.z + SPHERE_RADIUS * 1.2) / radiusDouble));
+                // Smoother opacity with better visibility
+                tag.opacity = Math.max(0.2, Math.min(1, (z2 + radius12) / radiusDouble));
                 
-                tag.zIndex = Math.floor(tag.z);
+                tag.zIndex = Math.floor(z2);
                 
-                // Enhanced glow effect with pulsing
+                // 优化发光效果 - 更稳定清晰
                 if (isDrawing) {
-                    const pulse = Math.sin(time * 4 + i * 0.3) * 0.5 + 0.5;
-                    tag.glowIntensity = tag.z > 0 ? (tag.z / SPHERE_RADIUS) * (12 + pulse * 5) : 0;
-                    // 减小字体大小变化幅度，保持清晰
-                    tag.fontSize = 34 + pulse * 2;
+                    const pulse = Math.sin(time * 3 + i * 0.15) * 0.3 + 0.7;
+                    tag.glowIntensity = z2 > 0 ? (z2 / SPHERE_RADIUS) * (10 + pulse * 3) : 0;
+                    tag.fontSize = 34 + pulse * 1.5;
                 } else {
-                    tag.glowIntensity = tag.z > 0 ? (tag.z / SPHERE_RADIUS) * 8 : 0;
+                    tag.glowIntensity = z2 > 0 ? (z2 / SPHERE_RADIUS) * 8 : 0;
                     tag.fontSize = 34;
                 }
             }
@@ -408,6 +424,7 @@ export default {
 
         watch(() => store.participants, initSphere, {deep: true});
         watch(() => store.remainingParticipants.length, initSphere);
+        watch(() => store.currentRoundIndex, initSphere);
 
         onMounted(() => {
             initSphere();
