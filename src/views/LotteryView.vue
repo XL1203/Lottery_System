@@ -7,7 +7,8 @@
             <div class="twinkling"></div>
             <div class="clouds"></div>
             <div v-if="store.isDrawing" class="warp-speed">
-                <div v-for="n in 20" :key="n" class="warp-star" :style="{ '--angle': n * 18 + 'deg', 'animation-delay': Math.random() + 's' }"></div>
+                <div v-for="n in 20" :key="n" class="warp-star"
+                     :style="{ '--angle': n * 18 + 'deg', 'animation-delay': Math.random() + 's' }"></div>
             </div>
         </div>
 
@@ -45,10 +46,10 @@
                 <!-- Winner Cards Grid -->
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     <div
-                        v-for="(winner, idx) in store.currentRoundWinners"
-                        :key="winner.id"
-                        class="relative group"
-                        :style="{ animationDelay: idx * 0.05 + 's' }"
+                            v-for="(winner, idx) in store.currentRoundWinners"
+                            :key="winner.id"
+                            class="relative group"
+                            :style="{ animationDelay: idx * 0.05 + 's' }"
                     >
                         <!-- Card -->
                         <div class="relative bg-slate-900/80 backdrop-blur-sm border-2 border-cyan-500/30 rounded-xl p-4 hover:border-cyan-400/60 transition-all duration-300 hover:scale-105 animate-zoom-in">
@@ -56,7 +57,7 @@
                             <div class="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-xs font-black text-white shadow-lg">
                                 {{ idx + 1 }}
                             </div>
-                            
+
                             <!-- Winner Name -->
                             <div class="text-center">
                                 <div class="text-xl font-bold text-white mb-1">{{ winner.name }}</div>
@@ -70,12 +71,15 @@
             <!-- Otherwise Show The Sphere -->
             <div v-else class="scene-3d w-full h-full flex items-center justify-center">
                 <!-- Orbit Rings -->
-                <div class="orbit-ring" style="width: 500px; height: 500px; left: 50%; top: 50%; margin-left: -250px; margin-top: -250px; animation-duration: 30s;"></div>
-                <div class="orbit-ring" style="width: 650px; height: 650px; left: 50%; top: 50%; margin-left: -325px; margin-top: -325px; animation-duration: 45s; animation-direction: reverse;"></div>
-                <div class="orbit-ring" style="width: 800px; height: 800px; left: 50%; top: 50%; margin-left: -400px; margin-top: -400px; animation-duration: 60s;"></div>
-                
+                <div class="orbit-ring"
+                     style="width: 500px; height: 500px; left: 50%; top: 50%; margin-left: -250px; margin-top: -250px; animation-duration: 30s;"></div>
+                <div class="orbit-ring"
+                     style="width: 650px; height: 650px; left: 50%; top: 50%; margin-left: -325px; margin-top: -325px; animation-duration: 45s; animation-direction: reverse;"></div>
+                <div class="orbit-ring"
+                     style="width: 800px; height: 800px; left: 50%; top: 50%; margin-left: -400px; margin-top: -400px; animation-duration: 60s;"></div>
+
                 <!-- Floating Particles -->
-                <div v-for="n in 30" :key="`particle-${n}`" 
+                <div v-for="n in 30" :key="`particle-${n}`"
                      class="particle"
                      :style="{
                          left: `${Math.random() * 100}%`,
@@ -89,26 +93,28 @@
                          animationDelay: `${Math.random() * 5}s`
                      }"
                 ></div>
-                
+
                 <div class="tag-cloud-container">
                     <div
                             v-for="tag in tags"
                             :key="tag.id"
-                            class="tag-element font-bold"
+                            :class="['tag-element font-bold', tag.scale > 0.65 ? 'tag-front' : 'tag-middle']"
                             :style="{
-              transform: `translate3d(${tag.x.toFixed(1)}px, ${tag.y.toFixed(1)}px, ${tag.z.toFixed(1)}px) translate(-50%, -50%) scale(${tag.scale.toFixed(2)})`,
-              opacity: tag.opacity.toFixed(2),
-              zIndex: tag.zIndex,
-              background: tag.gradient,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              fontSize: tag.fontSize,
-              textShadow: tag.textShadow
-            }"
+                                '--tx': tag.x + 'px',
+                                '--ty': tag.y + 'px',
+                                '--tz': tag.z + 'px',
+                                '--scale': tag.scale,
+                                '--opacity': tag.opacity,
+                                zIndex: tag.zIndex,
+                                '--gradient': tag.gradient,
+                                '--solid-color': tag.glowColor,
+                                '--glow-color': tag.glowColor,
+                                '--glow-intensity': tag.glowIntensity + 'px',
+                                '--font-size': tag.fontSize + 'px'
+                            }"
                     >
                         <span v-if="tag.z > -100">{{ tag.text }}</span>
-                        <span v-else class="w-2 h-2 bg-blue-500/50 rounded-full block"></span> <!-- Optimize distant dots -->
+                        <span v-else class="w-2 h-2 bg-blue-500/50 rounded-full block"></span>
                     </div>
                 </div>
             </div>
@@ -126,10 +132,10 @@
             >
                 <!-- Outer Glow with pulsing -->
                 <div class="absolute inset-0 bg-gradient-to-br from-blue-500/40 via-cyan-500/40 to-purple-500/40 rounded-full blur-2xl group-hover:blur-3xl transition-all animate-pulse"></div>
-                
+
                 <!-- Rotating ring -->
                 <div class="absolute inset-0 rounded-full border-2 border-transparent border-t-cyan-400/50 border-r-cyan-400/30 animate-spin-slow"></div>
-                
+
                 <!-- Button Body -->
                 <div class="relative w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-full border-4 border-cyan-400/60 shadow-[0_0_40px_rgba(34,211,238,0.4)] group-hover:shadow-[0_0_60px_rgba(34,211,238,0.6)] group-hover:border-cyan-300 transition-all flex flex-col items-center justify-center gap-1">
                     <i class="fas fa-power-off text-cyan-400 text-2xl group-hover:text-cyan-300 transition-colors animate-pulse"></i>
@@ -140,16 +146,16 @@
             <!-- Page Indicators -->
             <div class="flex gap-3">
                 <button
-                    v-for="i in store.rounds.length" 
-                    :key="i"
-                    @click="store.currentRoundIndex = i - 1"
-                    :class="[
+                        v-for="i in store.rounds.length"
+                        :key="i"
+                        @click="store.currentRoundIndex = i - 1"
+                        :class="[
                         'h-3 rounded-full transition-all duration-300 cursor-pointer',
                         i === store.currentRoundIndex + 1 
                             ? 'bg-cyan-400 w-12 shadow-[0_0_10px_rgba(34,211,238,0.6)]' 
                             : 'bg-slate-600/60 w-3 hover:bg-slate-500 hover:w-6'
                     ]"
-                    :title="`查看 ${store.rounds[i - 1]?.name}`"
+                        :title="`查看 ${store.rounds[i - 1]?.name}`"
                 >
                 </button>
             </div>
@@ -162,20 +168,21 @@
             >
                 <!-- Multiple pulsing rings -->
                 <div class="absolute inset-0 bg-red-600 rounded-full animate-ping opacity-20"></div>
-                <div class="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-10" style="animation-delay: 0.5s;"></div>
-                
+                <div class="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-10"
+                     style="animation-delay: 0.5s;"></div>
+
                 <!-- Rotating danger ring -->
                 <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-red-300/60 border-r-red-300/40 animate-spin"></div>
-                
+
                 <span class="relative z-10 animate-pulse">STOP</span>
             </button>
 
             <!-- Result Controls -->
             <div v-if="store.currentRoundWinners.length > 0" class="flex gap-4">
                 <!-- 重抽按钮 -->
-                <button 
-                    @click="handleReset" 
-                    class="px-8 py-3 rounded-full bg-slate-800/80 hover:bg-slate-700/80 border-2 border-white/20 hover:border-white/40 text-white font-bold backdrop-blur transition-all flex items-center gap-2"
+                <button
+                        @click="handleReset"
+                        class="px-8 py-3 rounded-full bg-slate-800/80 hover:bg-slate-700/80 border-2 border-white/20 hover:border-white/40 text-white font-bold backdrop-blur transition-all flex items-center gap-2"
                 >
                     <i class="fas fa-redo"></i>
                     <span>重抽</span>
@@ -183,9 +190,9 @@
 
                 <!-- 下一轮按钮 -->
                 <button
-                    v-if="store.currentRoundIndex < store.rounds.length - 1"
-                    @click="store.nextRound"
-                    class="px-8 py-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white font-bold shadow-lg hover:scale-105 transition-all flex items-center gap-2"
+                        v-if="store.currentRoundIndex < store.rounds.length - 1"
+                        @click="store.nextRound"
+                        class="px-8 py-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white font-bold shadow-lg hover:scale-105 transition-all flex items-center gap-2"
                 >
                     <span>下一轮</span>
                     <i class="fas fa-arrow-right"></i>
@@ -193,9 +200,9 @@
 
                 <!-- 导出名单按钮 (所有奖项抽完后显示) -->
                 <button
-                    v-if="store.isAllFinished"
-                    @click="handleExport"
-                    class="px-8 py-3 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-white font-bold shadow-lg hover:scale-105 transition-all flex items-center gap-2"
+                        v-if="store.isAllFinished"
+                        @click="handleExport"
+                        class="px-8 py-3 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-white font-bold shadow-lg hover:scale-105 transition-all flex items-center gap-2"
                 >
                     <i class="fas fa-download"></i>
                     <span>导出名单</span>
@@ -208,8 +215,8 @@
 </template>
 
 <script>
-import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue';
-import { useLotteryStore } from '../../store/index';
+import {ref, watch, onMounted, onUnmounted, nextTick} from 'vue';
+import {useLotteryStore} from '../../store/index';
 import confetti from 'canvas-confetti';
 
 export default {
@@ -218,12 +225,12 @@ export default {
         const containerRef = ref(null);
         const tags = ref([]);
         let animationFrameId;
-        let rotationAxis = { x: 0, y: 0 };
+        let rotationAxis = {x: 0, y: 0};
 
         // Config
         const SPHERE_RADIUS = 350;
-        const BASE_SPEED = 0.008;  // 待机时也有明显的滚动
-        const DRAW_SPEED = 0.2;
+        const BASE_SPEED = 0.01;  // 待机时的滚动速度
+        const DRAW_SPEED = 0.25;  // 抽奖时的速度 - 加快
 
         // Color palette for neon effect
         const colorPalette = [
@@ -280,8 +287,8 @@ export default {
                     visible: true,
                     gradient: gradient,
                     glowColor: glowColor,
-                    fontSize: '20px',
-                    textShadow: 'none'
+                    glowIntensity: 0,
+                    fontSize: 34
                 };
             });
         };
@@ -297,7 +304,7 @@ export default {
             let y1 = y * cos - z1 * sin;
             let z2 = z1 * cos + y * sin;
 
-            return { x: x1, y: y1, z: z2 };
+            return {x: x1, y: y1, z: z2};
         };
 
         const animate = () => {
@@ -305,17 +312,17 @@ export default {
             const isDrawing = store.isDrawing;
             const time = Date.now() * 0.001;
 
-            // Smooth speed transition with acceleration
-            if (rotationAxis.y < targetSpeed) {
-                rotationAxis.y += isDrawing ? 0.01 : 0.001;  // 更快的加速
-            } else if (rotationAxis.y > targetSpeed) {
-                rotationAxis.y -= 0.015;  // 更快的减速
-            }
+            // Smooth speed transition with easing
+            const speedDiff = targetSpeed - rotationAxis.y;
+            rotationAxis.y += speedDiff * (isDrawing ? 0.12 : 0.05);
 
-            // Dynamic X-axis rotation - 简化摆动计算
-            rotationAxis.x = Math.sin(time * 0.6) * (isDrawing ? 0.002 : 0.003);
+            // Dynamic X-axis wobble - 抽奖时更剧烈
+            rotationAxis.x = Math.sin(time * (isDrawing ? 1.5 : 0.3)) * (isDrawing ? 0.008 : 0.003);
 
             const len = tags.value.length;
+            const radiusDouble = SPHERE_RADIUS * 2;
+            const radiusTriple = SPHERE_RADIUS * 3;
+            
             for (let i = 0; i < len; i++) {
                 const tag = tags.value[i];
                 const r = rotatePoint(tag.x, tag.y, tag.z, rotationAxis.x, rotationAxis.y);
@@ -323,30 +330,25 @@ export default {
                 tag.y = r.y;
                 tag.z = r.z;
 
-                // Enhanced scale calculation for more depth
-                const depthFactor = (tag.z + SPHERE_RADIUS * 2) / (SPHERE_RADIUS * 3);
-                tag.scale = Math.max(0.3, depthFactor + 0.4);
+                // Optimized depth calculations
+                const zOffset = tag.z + radiusDouble;
+                const depthFactor = zOffset / radiusTriple;
+                tag.scale = 0.3 + depthFactor * 0.7;
                 
-                // Smoother opacity transition
-                const opacityFactor = (tag.z + SPHERE_RADIUS * 1.2) / (SPHERE_RADIUS * 2);
-                tag.opacity = Math.max(0.2, Math.min(1, opacityFactor));
+                // Smoother opacity
+                tag.opacity = Math.max(0.15, Math.min(1, (tag.z + SPHERE_RADIUS * 1.2) / radiusDouble));
                 
                 tag.zIndex = Math.floor(tag.z);
-
-                // Dynamic font size - 简化计算
-                if (isDrawing) {
-                    const pulse = Math.sin(time * 3 + i * 0.1) * 0.5 + 0.5;
-                    tag.fontSize = `${14 + pulse * 4}px`;
-                } else {
-                    tag.fontSize = '22px';  // 固定大小，减少计算
-                }
                 
-                // Enhanced glow effect - 优化性能
-                if (tag.z > 0) {
-                    const glowIntensity = (tag.z / SPHERE_RADIUS) * 12;
-                    tag.textShadow = `0 0 ${glowIntensity}px ${tag.glowColor}, 0 0 ${glowIntensity * 0.5}px ${tag.glowColor}`;
+                // Enhanced glow effect with pulsing
+                if (isDrawing) {
+                    const pulse = Math.sin(time * 4 + i * 0.3) * 0.5 + 0.5;
+                    tag.glowIntensity = tag.z > 0 ? (tag.z / SPHERE_RADIUS) * (12 + pulse * 5) : 0;
+                    // 减小字体大小变化幅度，保持清晰
+                    tag.fontSize = 34 + pulse * 2;
                 } else {
-                    tag.textShadow = 'none';
+                    tag.glowIntensity = tag.z > 0 ? (tag.z / SPHERE_RADIUS) * 8 : 0;
+                    tag.fontSize = 34;
                 }
             }
 
@@ -381,14 +383,14 @@ export default {
             const end = Date.now() + 3000;
             const colors = ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff'];
             (function frame() {
-                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors });
-                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors });
+                confetti({particleCount: 5, angle: 60, spread: 55, origin: {x: 0}, colors});
+                confetti({particleCount: 5, angle: 120, spread: 55, origin: {x: 1}, colors});
                 if (Date.now() < end) requestAnimationFrame(frame);
             }());
         };
 
         const handleReset = () => {
-            if(confirm('重置本轮？')) {
+            if (confirm('重置本轮？')) {
                 store.resetCurrentRound();
                 nextTick(() => {
                     initSphere();
@@ -404,7 +406,7 @@ export default {
             }
         }
 
-        watch(() => store.participants, initSphere, { deep: true });
+        watch(() => store.participants, initSphere, {deep: true});
         watch(() => store.remainingParticipants.length, initSphere);
 
         onMounted(() => {

@@ -1,226 +1,300 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galaxy Lottery 3D</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-            mono: ['Fira Code', 'monospace'],
-          },
-          animation: {
-            'spin-slow': 'spin 60s linear infinite',
-            'spin-medium': 'spin 3s linear infinite',
-            'float': 'float 6s ease-in-out infinite',
-            'shine': 'shine 2s infinite',
-            'zoom-in': 'zoomIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
-            'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-          },
-          keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-20px)' },
-            },
-            shine: {
-              '0%': { left: '-100%' },
-              '100%': { left: '100%' }
-            },
-            zoomIn: {
-              '0%': { opacity: '0', transform: 'scale(0.8) translateZ(-100px)' },
-              '100%': { opacity: '1', transform: 'scale(1) translateZ(0)' }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy Lottery 3D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    animation: {
+                        'spin-slow': 'spin 60s linear infinite',
+                        'spin-medium': 'spin 3s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shine': 'shine 2s infinite',
+                        'zoom-in': 'zoomIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': {transform: 'translateY(0px)'},
+                            '50%': {transform: 'translateY(-20px)'},
+                        },
+                        shine: {
+                            '0%': {left: '-100%'},
+                            '100%': {left: '100%'}
+                        },
+                        zoomIn: {
+                            '0%': {opacity: '0', transform: 'scale(0.8) translateZ(-100px)'},
+                            '100%': {opacity: '1', transform: 'scale(1) translateZ(0)'}
+                        }
+                    }
+                }
             }
-          }
         }
-      }
-    }
-  </script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  
-  <!-- UMD Globals (Stable) -->
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-  <style>
-    body { margin: 0; overflow: hidden; background: #050505; }
-    
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
-    
-    /* 3D Scene */
-    .scene-container {
-      perspective: 1500px;
-      overflow: hidden;
-    }
-    
-    /* Deep Galaxy Background */
-    .galaxy-bg {
-      position: absolute;
-      width: 100%; height: 100%;
-      background: radial-gradient(circle at bottom, #1e293b 0%, #020617 100%);
-      z-index: -1;
-    }
-    .stars {
-      background: #000 url(https://www.script-tutorials.com/demos/360/images/stars.png) repeat top center; 
-      z-index: 0;
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      opacity: 0.8;
-    }
-    .twinkling { 
-      background: transparent url(https://www.script-tutorials.com/demos/360/images/twinkling.png) repeat top center; 
-      z-index: 1; 
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      animation: move-twink-back 100s linear infinite; 
-      opacity: 0.3;
-    }
-    
-    @keyframes move-twink-back { 
-      from {background-position:0 0;} 
-      to {background-position:-10000px 5000px;} 
-    }
+    <!-- UMD Globals (Stable) -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    /* Drag & Drop Styles */
-    .sortable-ghost { opacity: 0.4; background: #eff6ff; border: 2px dashed #3b82f6; }
-    .drag-handle { cursor: grab; }
-    .drag-handle:active { cursor: grabbing; }
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #050505;
+        }
 
-    /* 3D Tag Cloud Container */
-    .perspective-container {
-      perspective: 2000px;
-      transform-style: preserve-3d;
-    }
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
 
-    .scene-3d {
-      transform-style: preserve-3d;
-    }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
 
-    .tag-cloud-container {
-      position: relative;
-      width: 700px;
-      height: 700px;
-      transform-style: preserve-3d;
-      filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.3));
-    }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
 
-    .tag-element {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      white-space: nowrap;
-      user-select: none;
-      pointer-events: none;
-      font-size: 18px;
-      font-weight: bold;
-      will-change: transform, opacity;
-      backface-visibility: hidden;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      letter-spacing: 0.05em;
-    }
+        /* 3D Scene */
+        .scene-container {
+            perspective: 1500px;
+            overflow: hidden;
+        }
 
-    /* Warp Speed Effect */
-    .warp-speed {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
+        /* Deep Galaxy Background */
+        .galaxy-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at bottom, #1e293b 0%, #020617 100%);
+            z-index: -1;
+        }
 
-    .warp-star {
-      position: absolute;
-      width: 2px;
-      height: 100px;
-      background: linear-gradient(to bottom, transparent, #60a5fa, transparent);
-      left: 50%;
-      top: 50%;
-      transform-origin: top center;
-      transform: rotate(var(--angle)) translateY(-50vh);
-      animation: warp 1.5s linear infinite;
-      opacity: 0.6;
-    }
+        .stars {
+            background: #000 url(https://www.script-tutorials.com/demos/360/images/stars.png) repeat top center;
+            z-index: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.8;
+        }
 
-    @keyframes warp {
-      0% {
-        height: 0px;
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        height: 150px;
-        transform: rotate(var(--angle)) translateY(50vh);
-        opacity: 0;
-      }
-    }
+        .twinkling {
+            background: transparent url(https://www.script-tutorials.com/demos/360/images/twinkling.png) repeat top center;
+            z-index: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            animation: move-twink-back 100s linear infinite;
+            opacity: 0.3;
+        }
 
-    /* Clouds Layer */
-    .clouds {
-      background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.08)"/><circle cx="50" cy="70" r="1.2" fill="rgba(255,255,255,0.12)"/></svg>') repeat;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 2;
-      opacity: 0.4;
-      animation: move-clouds 200s linear infinite;
-    }
+        @keyframes move-twink-back {
+            from {
+                background-position: 0 0;
+            }
+            to {
+                background-position: -10000px 5000px;
+            }
+        }
 
-    @keyframes move-clouds {
-      from { background-position: 0 0; }
-      to { background-position: 10000px 0; }
-    }
+        /* Drag & Drop Styles */
+        .sortable-ghost {
+            opacity: 0.4;
+            background: #eff6ff;
+            border: 2px dashed #3b82f6;
+        }
 
-    /* Particle System */
-    .particle {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-      opacity: 0;
-      animation: float-particle linear infinite;
-    }
+        .drag-handle {
+            cursor: grab;
+        }
 
-    @keyframes float-particle {
-      0% {
-        transform: translate(0, 0) scale(0);
-        opacity: 0;
-      }
-      10% {
-        opacity: 0.8;
-      }
-      90% {
-        opacity: 0.8;
-      }
-      100% {
-        transform: translate(var(--tx), var(--ty)) scale(1);
-        opacity: 0;
-      }
-    }
+        .drag-handle:active {
+            cursor: grabbing;
+        }
 
-    /* Orbit Rings */
-    .orbit-ring {
-      position: absolute;
-      border: 1px solid rgba(59, 130, 246, 0.15);
-      border-radius: 50%;
-      pointer-events: none;
-      animation: rotate-ring linear infinite;
-    }
+        /* 3D Tag Cloud Container */
+        .perspective-container {
+            perspective: 2000px;
+            transform-style: preserve-3d;
+        }
 
-    @keyframes rotate-ring {
-      from { transform: rotateX(60deg) rotateZ(0deg); }
-      to { transform: rotateX(60deg) rotateZ(360deg); }
-    }
-  </style>
+        .scene-3d {
+            transform-style: preserve-3d;
+        }
+
+        .tag-cloud-container {
+            position: relative;
+            width: 700px;
+            height: 700px;
+            transform-style: preserve-3d;
+            filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.3));
+        }
+
+        .tag-element {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            white-space: nowrap;
+            user-select: none;
+            pointer-events: none;
+            font-size: var(--font-size, 34px);
+            font-weight: 900;
+            will-change: transform;
+            backface-visibility: hidden;
+            transform: translate3d(var(--tx), var(--ty), var(--tz)) translate(-50%, -50%) scale(var(--scale));
+            opacity: var(--opacity);
+            color: var(--solid-color);
+            letter-spacing: 0.12em;
+            text-shadow: 
+                0 0 var(--glow-intensity) var(--glow-color),
+                0 0 calc(var(--glow-intensity) * 0.6) var(--glow-color),
+                0 1px 3px rgba(0,0,0,0.7);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        
+        /* 前景文字 - 增强发光和动画 */
+        .tag-front {
+            filter: brightness(1.25) contrast(1.2) saturate(1.15);
+        }
+        
+        /* 中间文字 - 保持清晰 */
+        .tag-middle {
+            filter: brightness(1.15) contrast(1.25) saturate(1.1);
+            font-weight: 900;
+        }
+        
+        @keyframes glow-pulse {
+            0%, 100% { 
+                filter: brightness(1.25) contrast(1.2) saturate(1.15);
+            }
+            50% { 
+                filter: brightness(1.35) contrast(1.25) saturate(1.25);
+            }
+        }
+
+        /* Warp Speed Effect */
+        .warp-speed {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .warp-star {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, #60a5fa, transparent);
+            left: 50%;
+            top: 50%;
+            transform-origin: top center;
+            transform: rotate(var(--angle)) translateY(-50vh);
+            animation: warp 1.5s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes warp {
+            0% {
+                height: 0px;
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                height: 150px;
+                transform: rotate(var(--angle)) translateY(50vh);
+                opacity: 0;
+            }
+        }
+
+        /* Clouds Layer */
+        .clouds {
+            background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.08)"/><circle cx="50" cy="70" r="1.2" fill="rgba(255,255,255,0.12)"/></svg>') repeat;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2;
+            opacity: 0.4;
+            animation: move-clouds 200s linear infinite;
+        }
+
+        @keyframes move-clouds {
+            from {
+                background-position: 0 0;
+            }
+            to {
+                background-position: 10000px 0;
+            }
+        }
+
+        /* Particle System */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            animation: float-particle linear infinite;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translate(0, 0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Orbit Rings */
+        .orbit-ring {
+            position: absolute;
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: rotate-ring linear infinite;
+        }
+
+        @keyframes rotate-ring {
+            from {
+                transform: rotateX(60deg) rotateZ(0deg);
+            }
+            to {
+                transform: rotateX(60deg) rotateZ(360deg);
+            }
+        }
+    </style>
 </head>
 <body class="text-white h-screen w-screen overflow-hidden font-sans">
-  <div id="app" class="h-full w-full"></div>
-  <script type="module" src="/src/main.js"></script>
+<div id="app" class="h-full w-full"></div>
+<script type="module" src="/src/main.js"></script>
 </body>
 </html>
